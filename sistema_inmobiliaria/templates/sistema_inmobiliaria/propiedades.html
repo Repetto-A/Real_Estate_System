@@ -1,0 +1,701 @@
+{% extends './base.html' %} 
+{% load static %}
+
+{% block title %}Propiedades en Venta - Bienes Raíces Premium{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 mt-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="display-4 fw-bold font-display mb-3">Nuestras Propiedades</h1>
+                <p class="lead text-muted">Encuentra la propiedad perfecta para ti</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="py-4 bg-white shadow-sm">
+    <div class="container">
+        <form method="GET" id="filterForm">
+            <div class="row align-items-end g-3">
+                <!-- Search Bar -->
+                <div class="col-lg-3">
+                    <label for="search" class="form-label">Buscar</label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           value="{{ search }}" placeholder="Buscar propiedades...">
+                </div>
+                
+                <!-- Price Range -->
+                <div class="col-lg-2">
+                    <label for="precio_min" class="form-label">Precio Mínimo</label>
+                    <input type="number" class="form-control" id="precio_min" name="precio_min" 
+                           value="{{ precio_min }}" placeholder="$0">
+                </div>
+                
+                <div class="col-lg-2">
+                    <label for="precio_max" class="form-label">Precio Máximo</label>
+                    <input type="number" class="form-control" id="precio_max" name="precio_max" 
+                           value="{{ precio_max }}" placeholder="$999,999">
+                </div>
+                
+                <!-- Features -->
+                <div class="col-lg-1">
+                    <label for="habitaciones" class="form-label">Hab.</label>
+                    <select class="form-select" id="habitaciones" name="habitaciones">
+                        <option value="">Todas</option>
+                        <option value="1" {% if habitaciones == '1' %}selected{% endif %}>1+</option>
+                        <option value="2" {% if habitaciones == '2' %}selected{% endif %}>2+</option>
+                        <option value="3" {% if habitaciones == '3' %}selected{% endif %}>3+</option>
+                        <option value="4" {% if habitaciones == '4' %}selected{% endif %}>4+</option>
+                        <option value="5" {% if habitaciones == '5' %}selected{% endif %}>5+</option>
+                    </select>
+                </div>
+                
+                <div class="col-lg-1">
+                    <label for="banos" class="form-label">Baños</label>
+                    <select class="form-select" id="banos" name="banos">
+                        <option value="">Todos</option>
+                        <option value="1" {% if banos == '1' %}selected{% endif %}>1+</option>
+                        <option value="2" {% if banos == '2' %}selected{% endif %}>2+</option>
+                        <option value="3" {% if banos == '3' %}selected{% endif %}>3+</option>
+                        <option value="4" {% if banos == '4' %}selected{% endif %}>4+</option>
+                    </select>
+                </div>
+                
+                <div class="col-lg-1">
+                    <label for="estacionamiento" class="form-label">Est.</label>
+                    <select class="form-select" id="estacionamiento" name="estacionamiento">
+                        <option value="">Todos</option>
+                        <option value="1" {% if estacionamiento == '1' %}selected{% endif %}>1+</option>
+                        <option value="2" {% if estacionamiento == '2' %}selected{% endif %}>2+</option>
+                        <option value="3" {% if estacionamiento == '3' %}selected{% endif %}>3+</option>
+                    </select>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="col-lg-2">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill">
+                            <i class="fas fa-search me-1"></i>Buscar
+                        </button>
+                        <a href="{% url 'Propiedades' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <!-- View Toggle -->
+        <div class="row mt-3">
+            <div class="col-12 text-end">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-secondary active" id="gridView">
+                        <i class="fas fa-th-large"></i> Grid
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="listView">
+                        <i class="fas fa-list"></i> Lista
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Properties Grid -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <p class="text-muted mb-0">
+                    Mostrando <strong>{{ total_propiedades }}</strong> 
+                    {% if total_propiedades == 1 %}propiedad{% else %}propiedades{% endif %}
+                    {% if search or precio_min or precio_max or habitaciones or banos or estacionamiento %}
+                        <span class="text-primary">filtradas</span>
+                    {% endif %}
+                </p>
+                {% if search or precio_min or precio_max or habitaciones or banos or estacionamiento %}
+                <div class="mt-2">
+                    <small class="text-muted">Filtros activos:</small>
+                    {% if search %}<span class="badge bg-primary me-1">"{{ search }}"</span>{% endif %}
+                    {% if precio_min %}<span class="badge bg-secondary me-1">Desde ${{ precio_min }}</span>{% endif %}
+                    {% if precio_max %}<span class="badge bg-secondary me-1">Hasta ${{ precio_max }}</span>{% endif %}
+                    {% if habitaciones %}<span class="badge bg-info me-1">{{ habitaciones }}+ Hab.</span>{% endif %}
+                    {% if banos %}<span class="badge bg-info me-1">{{ banos }}+ Baños</span>{% endif %}
+                    {% if estacionamiento %}<span class="badge bg-info me-1">{{ estacionamiento }}+ Est.</span>{% endif %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Ordenar por
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="?{{ request.GET.urlencode }}&orden=precio_asc">Precio: Menor a Mayor</a></li>
+                        <li><a class="dropdown-item" href="?{{ request.GET.urlencode }}&orden=precio_desc">Precio: Mayor a Menor</a></li>
+                        <li><a class="dropdown-item" href="?{{ request.GET.urlencode }}&orden=recientes">Más Recientes</a></li>
+                        <li><a class="dropdown-item" href="?{{ request.GET.urlencode }}&orden=antiguos">Más Antiguos</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4" id="propertiesGrid">
+            {% for propiedad in propiedades %}
+            <div class="col-lg-4 col-md-6 property-item">
+                <div class="property-card h-100">
+                    <div class="property-image-container">
+                        <img src="{% if propiedad.imagen %}{% if propiedad.imagen.url %}{{ propiedad.imagen.url }}{% else %}{% get_media_prefix as MEDIA_PREFIX %}{{ MEDIA_PREFIX }}propiedades/{{ propiedad.imagen }}{% endif %}{% else %}{% static 'sistema_inmobiliaria/img/anuncio1.jpg' %}{% endif %}" 
+                             class="property-image" alt="{{ propiedad.titulo }}">
+                        
+                        <!-- Property Status Badge -->
+                        <div class="property-status">
+                            <span class="badge bg-success">Disponible</span>
+                        </div>
+                        
+                        <!-- Favorite Button -->
+                        <button class="favorite-btn" data-property-id="{{ propiedad.id }}">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        
+                        <!-- Quick View Overlay -->
+                        <div class="property-overlay">
+                            <div class="overlay-content">
+                                <a href="{% url 'Propiedad' propiedad.id %}" class="btn btn-light btn-sm me-2">
+                                    <i class="fas fa-eye me-1"></i>Ver Detalles
+                                </a>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#contactModal"
+                                        data-propiedad-id="{{ propiedad.id }}"
+                                        data-propiedad-titulo="{{ propiedad.titulo }}"
+                                        data-propiedad-precio="{{ propiedad.precio }}">
+                                    <i class="fas fa-phone me-1"></i>Contactar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="property-content p-4">
+                        <div class="property-header mb-3">
+                            <h5 class="property-title fw-bold mb-1">{{ propiedad.titulo }}</h5>
+                            <p class="property-location text-muted mb-0">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ propiedad.ubicacion|default:"Ciudad, País" }}
+                            </p>
+                        </div>
+                        
+                        <p class="property-description text-muted mb-3">{{ propiedad.descripcion|truncatewords:20 }}</p>
+                        
+                        <!-- Property Features -->
+                        <div class="property-features mb-4">
+                            <div class="row g-2">
+                                <div class="col-4">
+                                    <div class="feature-item text-center">
+                                        <i class="fas fa-bed text-primary"></i>
+                                        <small class="d-block fw-semibold">{{ propiedad.habitaciones }}</small>
+                                        <small class="text-muted">Habitaciones</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="feature-item text-center">
+                                        <i class="fas fa-bath text-primary"></i>
+                                        <small class="d-block fw-semibold">{{ propiedad.bano }}</small>
+                                        <small class="text-muted">Baños</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="feature-item text-center">
+                                        <i class="fas fa-car text-primary"></i>
+                                        <small class="d-block fw-semibold">{{ propiedad.estacionamiento }}</small>
+                                        <small class="text-muted">Estacion.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Property Footer -->
+                        <div class="property-footer">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="property-price">
+                                    <span class="h4 fw-bold text-primary mb-0">${{ propiedad.precio|floatformat:0 }}</span>
+                                    <small class="text-muted d-block">Precio total</small>
+                                </div>
+                                <div class="property-actions">
+                                    <a href="{% url 'Propiedad' propiedad.id %}" class="btn btn-primary btn-sm">
+                                        Ver Más <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-home fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No se encontraron propiedades</h4>
+                    <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if propiedades %}
+        <nav aria-label="Paginación de propiedades" class="mt-5">
+            <ul class="pagination justify-content-center custom-pagination">
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="fas fa-chevron-left"></i>
+                        <span class="d-none d-sm-inline ms-1">Anterior</span>
+                    </span>
+                </li>
+                <li class="page-item active">
+                    <span class="page-link">1</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <span class="page-link text-muted">...</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">10</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">
+                        <span class="d-none d-sm-inline me-1">Siguiente</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Contactar Agente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Mensajes de éxito/error -->
+                <div id="modalMessages"></div>
+                
+                <form id="contactForm" method="POST" action="{% url 'Contacto' %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="modalPropiedadId" name="propiedad_id" value="">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="modalNombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="modalNombre" name="nombre" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modalTelefono" class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" id="modalTelefono" name="telefono" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalEmail" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="modalEmail" name="email" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalMensaje" class="form-label">Mensaje *</label>
+                            <textarea class="form-control" id="modalMensaje" name="mensaje" rows="3" 
+                                placeholder="Estoy interesado en esta propiedad..." required></textarea>
+                        </div>
+                        <input type="hidden" name="tipo" value="Compra">
+                        <input type="hidden" name="precio" value="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="contactForm" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Styles -->
+<style>
+    .property-status {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 2;
+    }
+
+    .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 2;
+    }
+
+    .favorite-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .favorite-btn.active {
+        background: var(--accent-color);
+        color: white;
+    }
+
+    .favorite-btn.active i {
+        font-weight: 900;
+    }
+
+    .overlay-content {
+        text-align: center;
+    }
+
+    .property-location {
+        font-size: 0.9rem;
+    }
+
+    .feature-item {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 10px 5px;
+        transition: all 0.3s ease;
+    }
+
+    .feature-item:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .feature-item:hover i {
+        color: white !important;
+    }
+
+    .pagination .page-link {
+        border-radius: 10px;
+        margin: 0 2px;
+        border: none;
+        color: var(--primary-color);
+    }
+
+    .pagination .page-item.active .page-link {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-group .btn {
+        border-radius: 8px;
+    }
+
+    .btn-group .btn:first-child {
+        margin-right: 2px;
+    }
+
+    /* List View Styles */
+    .list-view .property-item {
+        width: 100%;
+    }
+
+    .list-view .property-card {
+        display: flex;
+        flex-direction: row;
+        height: auto;
+    }
+
+    .list-view .property-image-container {
+        width: 300px;
+        flex-shrink: 0;
+    }
+
+    .list-view .property-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    @media (max-width: 768px) {
+        .list-view .property-card {
+            flex-direction: column;
+        }
+        
+        .list-view .property-image-container {
+            width: 100%;
+            height: 250px;
+        }
+    }
+    
+    /* Dark mode styles for filters section */
+    .dark-mode .bg-white {
+        background-color: #333 !important;
+    }
+    
+    .dark-mode .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(255, 255, 255, 0.075) !important;
+    }
+    
+    .dark-mode .form-label {
+        color: #e0e0e0 !important;
+    }
+    
+    .dark-mode .text-muted {
+        color: #b0b0b0 !important;
+    }
+    
+    .dark-mode .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .dark-mode .breadcrumb {
+        background: #2d2d2d;
+    }
+    
+    .dark-mode .breadcrumb-item.active {
+        color: #e0e0e0 !important;
+    }
+    
+    .dark-mode .breadcrumb-item + .breadcrumb-item::before {
+        color: #888 !important;
+    }
+    
+    /* Custom Pagination Styles */
+    .custom-pagination .page-link {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin: 0 2px;
+        padding: 0.75rem 1rem;
+        color: #495057;
+        background-color: #fff;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .custom-pagination .page-link:hover {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+    }
+    
+    .custom-pagination .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white !important;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+    }
+    
+    .custom-pagination .page-item.disabled .page-link {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+    
+    .custom-pagination .page-item.disabled .page-link:hover {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #6c757d;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    /* Dark mode pagination styles */
+    .dark-mode .custom-pagination .page-link {
+        background-color: #333;
+        border-color: #444;
+        color: #e0e0e0;
+    }
+    
+    .dark-mode .custom-pagination .page-link:hover {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+    
+    .dark-mode .custom-pagination .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white !important;
+    }
+    
+    .dark-mode .custom-pagination .page-item.disabled .page-link {
+        background-color: #2d2d2d;
+        border-color: #444;
+        color: #666;
+    }
+    
+    .dark-mode .custom-pagination .page-item.disabled .page-link:hover {
+        background-color: #2d2d2d;
+        border-color: #444;
+        color: #666;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // View toggle functionality
+    const gridViewBtn = document.getElementById('gridView');
+    const listViewBtn = document.getElementById('listView');
+    const propertiesGrid = document.getElementById('propertiesGrid');
+
+    gridViewBtn.addEventListener('click', function() {
+        propertiesGrid.classList.remove('list-view');
+        gridViewBtn.classList.add('active');
+        listViewBtn.classList.remove('active');
+    });
+
+    listViewBtn.addEventListener('click', function() {
+        propertiesGrid.classList.add('list-view');
+        listViewBtn.classList.add('active');
+        gridViewBtn.classList.remove('active');
+    });
+
+    // Favorite functionality
+    document.querySelectorAll('.favorite-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('active');
+            const icon = this.querySelector('i');
+            if (this.classList.contains('active')) {
+                icon.className = 'fas fa-heart';
+            } else {
+                icon.className = 'far fa-heart';
+            }
+        });
+    });
+
+    
+    // Contact modal functionality
+    const contactModal = document.getElementById('contactModal');
+    const contactForm = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const modalMessages = document.getElementById('modalMessages');
+    
+    // Handle modal open - capture property data
+    contactModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget; // Button that triggered the modal
+        const propiedadId = button.getAttribute('data-propiedad-id');
+        const propiedadTitulo = button.getAttribute('data-propiedad-titulo');
+        const propiedadPrecio = button.getAttribute('data-propiedad-precio');
+        
+        console.log('Modal abierto para propiedad:', propiedadId, propiedadTitulo, propiedadPrecio);
+        
+        // Update hidden fields
+        document.getElementById('modalPropiedadId').value = propiedadId || '';
+        document.querySelector('input[name="precio"]').value = propiedadPrecio || '';
+        
+        // Update modal title to include property info
+        const modalTitle = contactModal.querySelector('.modal-title');
+        if (propiedadTitulo) {
+            modalTitle.textContent = `Contactar Agente - ${propiedadTitulo}`;
+        } else {
+            modalTitle.textContent = 'Contactar Agente';
+        }
+        
+        // Pre-fill message with property reference (always update for the current property)
+        const mensajeTextarea = document.getElementById('modalMensaje');
+        if (propiedadTitulo) {
+            mensajeTextarea.value = `Estoy interesado/a en la propiedad: ${propiedadTitulo}. Me gustaría obtener más información.`;
+        }
+
+    });
+    
+    // Handle contact form submission
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+        
+        // Clear previous messages
+        modalMessages.innerHTML = '';
+        
+        try {
+            const formData = new FormData(contactForm);
+            console.log('Enviando datos:', Object.fromEntries(formData));
+            
+            const response = await fetch(contactForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            if (response.ok) {
+                // Show success message
+                modalMessages.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        ¡Gracias por contactarnos! Hemos recibido tu mensaje y nos pondremos en contacto contigo en breve.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                
+                // Clear form
+                contactForm.reset();
+                
+                // Close modal after 3 seconds
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(contactModal);
+                    modal.hide();
+                }, 3000);
+            } else {
+                throw new Error('Error en el servidor');
+            }
+        } catch (error) {
+            console.error('Error enviando formulario:', error);
+            // Show error message
+            modalMessages.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Hubo un error enviando tu mensaje. Por favor inténtalo nuevamente.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        } finally {
+            // Restore button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+    
+    // Clear modal when it's closed
+    contactModal.addEventListener('hidden.bs.modal', function() {
+        contactForm.reset();
+        modalMessages.innerHTML = '';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Enviar Mensaje';
+    });
+});
+</script>
+{% endblock %}

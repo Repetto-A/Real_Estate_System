@@ -1,0 +1,45 @@
+{% extends './base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+
+<div class="contenedor-anuncios">
+
+    {% for propiedad in propiedades %}
+    <div class="anuncio">
+
+        <img src="{% if propiedad.imagen %}{{ propiedad.imagen.url }}{% else %}{% static 'sistema_inmobiliaria/img/anuncio1.jpg' %}{% endif %}" alt="{{ propiedad.titulo }}">
+
+        <div class="contenido-anuncio">
+            <h3>{{ propiedad.titulo }}</h3>
+            <p>{{ propiedad.descripcion }}</p>
+            <p class="precio">$ {{ propiedad.precio }}</p>
+
+            <ul class="iconos-caracteristicas">
+                <li>
+                    <img class="icono" loading="lazy" src="{% static 'sistema_inmobiliaria/img/icono_wc.svg' %}" alt="icono wc">
+                    <p>{{ propiedad.bano }}</p>
+                </li>
+                <li>
+                    <img class="icono" loading="lazy" src="{% static 'sistema_inmobiliaria/img/icono_estacionamiento.svg' %}" alt="icono estacionamiento">
+                    <p>{{ propiedad.estacionamiento }}</p>
+                </li>
+                <li>
+                    <img class="icono" loading="lazy" src="{% static 'sistema_inmobiliaria/img/icono_dormitorio.svg' %}" alt="icono habitaciones">
+                    <p>{{ propiedad.habitaciones }}</p>
+                </li>
+            </ul>
+
+            <a href="{% url 'Propiedad' propiedad.id %}" class="boton-amarillo-block">
+                Ver Propiedad
+            </a>
+        </div><!--.contenido-anuncio-->
+    </div><!--anuncio-->
+    {% endfor %}
+
+</div> <!--.contenedor-anuncios-->
+
+
+{% endblock %}

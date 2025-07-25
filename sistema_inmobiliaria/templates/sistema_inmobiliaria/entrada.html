@@ -1,0 +1,319 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %}{{ entrada.titulo|default:"Guía para la decoración de tu hogar" }} - Blog{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="bg-light py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'Home' %}" class="text-decoration-none">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'Blog' %}" class="text-decoration-none">Blog</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ entrada.titulo|default:"Entrada" }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Article Header -->
+                <article class="blog-entry">
+                    <header class="mb-5">
+                        <h1 class="display-5 fw-bold mb-4">{{ entrada.titulo|default:"Guía para la decoración de tu hogar" }}</h1>
+                        
+                        <!-- Article Meta -->
+                        <div class="article-meta d-flex flex-wrap align-items-center gap-3 mb-4">
+                            <div class="meta-item d-flex align-items-center">
+                                <i class="fas fa-calendar-alt text-primary me-2"></i>
+                                <span class="text-muted">{{ entrada.fecha_publicacion|default:"20 de Octubre, 2021"|date:"d \d\e F, Y" }}</span>
+                            </div>
+                            <div class="meta-item d-flex align-items-center">
+                                <i class="fas fa-user text-primary me-2"></i>
+                                <span class="text-muted">{{ entrada.autor|default:"Admin" }}</span>
+                            </div>
+                            {% if entrada.categoria %}
+                            <div class="meta-item">
+                                <span class="badge bg-primary">{{ entrada.categoria }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="meta-item d-flex align-items-center">
+                                <i class="fas fa-clock text-primary me-2"></i>
+                                <span class="text-muted">{{ entrada.tiempo_lectura|default:"5" }} min de lectura</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <!-- Featured Image -->
+                    <div class="featured-image mb-5">
+                        <img src="{% if entrada.imagen %}{% if entrada.imagen.url %}{{ entrada.imagen.url }}{% else %}{% get_media_prefix as MEDIA_PREFIX %}{{ MEDIA_PREFIX }}{{ entrada.imagen }}{% endif %}{% else %}{% static 'sistema_inmobiliaria/img/destacada2.jpg' %}{% endif %}" 
+                             alt="{{ entrada.imagen_alt|default:entrada.titulo|default:'Imagen del artículo' }}" 
+                             class="img-fluid rounded shadow-lg w-100">
+                    </div>
+
+                    <!-- Article Content -->
+                    <div class="article-content">
+                        {% if entrada.contenido %}
+                            {{ entrada.contenido|safe }}
+                        {% else %}
+                            <!-- Contenido estático de ejemplo -->
+                            <div class="content-section mb-4">
+                                <p class="fs-5 text-muted lh-lg">
+                                    La decoración del hogar es un arte que combina funcionalidad y estética para crear espacios 
+                                    que reflejen tu personalidad y estilo de vida. En esta guía completa, exploraremos las 
+                                    tendencias más actuales y los consejos fundamentales para transformar tu casa en un hogar 
+                                    acogedor y elegante.
+                                </p>
+                            </div>
+
+                            <div class="content-section mb-4">
+                                <h3 class="h4 fw-bold mb-3">Elementos Clave para una Decoración Exitosa</h3>
+                                <p class="lh-lg">
+                                    El primer paso para decorar cualquier espacio es entender los elementos fundamentales: 
+                                    color, iluminación, textura y proporción. Cada uno de estos componentes juega un papel 
+                                    crucial en la creación de ambientes armoniosos y funcionales.
+                                </p>
+                                
+                                <ul class="list-unstyled">
+                                    <li class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-primary me-2 mt-1"></i>
+                                        <span><strong>Color:</strong> Define el estado de ánimo y la personalidad del espacio</span>
+                                    </li>
+                                    <li class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-primary me-2 mt-1"></i>
+                                        <span><strong>Iluminación:</strong> Crea atmósfera y resalta elementos decorativos</span>
+                                    </li>
+                                    <li class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-primary me-2 mt-1"></i>
+                                        <span><strong>Textura:</strong> Añade profundidad y interés visual</span>
+                                    </li>
+                                    <li class="d-flex align-items-start">
+                                        <i class="fas fa-check-circle text-primary me-2 mt-1"></i>
+                                        <span><strong>Proporción:</strong> Asegura equilibrio y armonía visual</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="content-section mb-4">
+                                <h3 class="h4 fw-bold mb-3">Tendencias de Decoración 2024</h3>
+                                <p class="lh-lg">
+                                    Este año se caracteriza por la búsqueda de espacios más sostenibles, funcionales y 
+                                    personalizados. Los materiales naturales, los colores tierra y los diseños minimalistas 
+                                    continúan siendo protagonistas en las tendencias actuales.
+                                </p>
+                            </div>
+
+                            <div class="quote-section my-5 p-4 bg-light rounded">
+                                <blockquote class="blockquote text-center mb-0">
+                                    <p class="fs-5 fst-italic">"Un hogar bien decorado no solo es hermoso, sino que también mejora tu calidad de vida y bienestar emocional."</p>
+                                    <footer class="blockquote-footer mt-2">
+                                        <cite title="Source Title">Experto en Diseño de Interiores</cite>
+                                    </footer>
+                                </blockquote>
+                            </div>
+
+                            <div class="content-section mb-4">
+                                <h3 class="h4 fw-bold mb-3">Consejos Prácticos para Cada Habitación</h3>
+                                <p class="lh-lg">
+                                    Cada espacio de tu hogar tiene necesidades específicas. Desde la sala de estar hasta 
+                                    el dormitorio, cada habitación requiere un enfoque particular que combine estética 
+                                    y funcionalidad de manera equilibrada.
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Article Footer -->
+                    <footer class="article-footer mt-5 pt-4 border-top">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <span class="text-muted me-3">Compartir:</span>
+                                    <div class="social-share">
+                                        <a href="#" class="btn btn-outline-primary btn-sm me-2" title="Compartir en Facebook">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-outline-info btn-sm me-2" title="Compartir en Twitter">
+                                            <i class="fab fa-twitter"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-outline-success btn-sm me-2" title="Compartir en WhatsApp">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-outline-secondary btn-sm" title="Copiar enlace">
+                                            <i class="fas fa-link"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                                <a href="{% url 'Blog' %}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-left me-2"></i>Volver al Blog
+                                </a>
+                            </div>
+                        </div>
+                    </footer>
+                </article>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <aside class="blog-sidebar ps-lg-4">
+                    <!-- Related Articles -->
+                    <div class="sidebar-widget mb-5">
+                        <h4 class="widget-title fw-bold mb-4">Artículos Relacionados</h4>
+                        <div class="related-articles">
+                            {% if entradas_relacionadas %}
+                                {% for entrada_relacionada in entradas_relacionadas %}
+                                <article class="related-article mb-4">
+                                    <div class="row g-3">
+                                        <div class="col-4">
+                                            {% if entrada_relacionada.imagen %}
+                                                <img src="{{ entrada_relacionada.imagen.url }}" 
+                                                     alt="{{ entrada_relacionada.titulo }}" 
+                                                     class="img-fluid rounded">
+                                            {% else %}
+                                                <img src="{% static 'sistema_inmobiliaria/img/blog-default.jpg' %}" 
+                                                     alt="{{ entrada_relacionada.titulo }}" 
+                                                     class="img-fluid rounded">
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-8">
+                                            <h6 class="mb-2">
+                                                <a href="{% url 'Entrada' entrada_relacionada.slug %}" class="text-decoration-none text-dark">{{ entrada_relacionada.titulo|truncatechars:40 }}</a>
+                                            </h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar-alt me-1"></i>{{ entrada_relacionada.fecha_publicacion|date:"d M Y" }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </article>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Fallback si no hay entradas relacionadas -->
+                                <p class="text-muted">No hay artículos relacionados disponibles.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Newsletter Subscription -->
+                    <div class="sidebar-widget mb-5">
+                        <div class="newsletter-widget bg-primary text-white p-4 rounded">
+                            <h5 class="fw-bold mb-3">¡Suscríbete a nuestro Newsletter!</h5>
+                            <p class="mb-3">Recibe los mejores consejos de decoración y las últimas tendencias directamente en tu email.</p>
+                            <form class="newsletter-form">
+                                <div class="input-group">
+                                    <input type="email" class="form-control" placeholder="Tu email aquí..." required>
+                                    <button class="btn btn-light" type="submit">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title fw-bold mb-4">Categorías</h4>
+                        <ul class="list-unstyled categories-list">
+                            {% if categorias_con_conteo %}
+                                {% for categoria in categorias_con_conteo %}
+                                <li class="mb-2">
+                                    <a href="{% url 'Blog' %}?search=&categoria={{ categoria.slug }}&fecha=&orden=reciente&destacadas=" class="text-decoration-none d-flex justify-content-between align-items-center">
+                                        <span>{{ categoria.nombre }}</span>
+                                        <span class="badge bg-secondary">{{ categoria.entradas_count }}</span>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Fallback si no hay categorías -->
+                                <li class="text-muted">
+                                    <span>No hay categorías disponibles</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Additional Styles -->
+<style>
+    .article-meta .meta-item {
+        font-size: 0.9rem;
+    }
+    
+    .featured-image img {
+        height: 400px;
+        object-fit: cover;
+    }
+    
+    .content-section p {
+        color: var(--bs-gray-700);
+    }
+    
+    .quote-section {
+        border-left: 4px solid var(--bs-primary);
+    }
+    
+    .social-share .btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .related-article img {
+        height: 60px;
+        object-fit: cover;
+    }
+    
+    .categories-list a {
+        color: var(--bs-gray-700);
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--bs-gray-200);
+    }
+    
+    .categories-list a:hover {
+        color: var(--bs-primary);
+    }
+    
+    .newsletter-widget {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%);
+    }
+    
+    /* Dark Mode Styles */
+    [data-bs-theme="dark"] .breadcrumb {
+        background-color: var(--bs-gray-800) !important;
+    }
+    
+    [data-bs-theme="dark"] .quote-section {
+        background-color: var(--bs-gray-800) !important;
+    }
+    
+    [data-bs-theme="dark"] .categories-list a {
+        color: var(--bs-gray-300);
+        border-bottom-color: var(--bs-gray-700);
+    }
+    
+    [data-bs-theme="dark"] .categories-list a:hover {
+        color: var(--bs-primary);
+    }
+    
+    [data-bs-theme="dark"] .related-article h6 a {
+        color: var(--bs-gray-100) !important;
+    }
+    
+    [data-bs-theme="dark"] .content-section p {
+        color: var(--bs-gray-300);
+    }
+</style>
+
+{% endblock %}

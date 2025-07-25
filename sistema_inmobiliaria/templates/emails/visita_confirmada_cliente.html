@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visita confirmada</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #28a745; color: white; padding: 20px; text-align: center; }
+        .content { background: #f8f9fa; padding: 20px; }
+        .visit-details { background: white; padding: 20px; margin: 20px 0; border-left: 4px solid #28a745; }
+        .property-info { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #007bff; }
+        .agent-info { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #6c757d; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+        .highlight { background: #fff3cd; padding: 10px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Visita Confirmada!</h1>
+            <p>Tu solicitud de visita ha sido aprobada</p>
+        </div>
+        
+        <div class="content">
+            <p>Hola <strong>{{ solicitud.nombre }}</strong>,</p>
+            
+            <p>¡Excelentes noticias! Tu solicitud de visita para la propiedad <strong>{{ propiedad.titulo }}</strong> ha sido confirmada.</p>
+            
+            <div class="visit-details">
+                <h3>Detalles de tu Visita</h3>
+                <p><strong>📅 Fecha:</strong> {{ solicitud.fecha_preferida|date:"d/m/Y" }}</p>
+                <p><strong>🕐 Hora:</strong> {{ solicitud.hora_preferida|time:"H:i" }}</p>
+                <p><strong>📍 Dirección:</strong> [Dirección de la propiedad]</p>
+                <p><strong>⏱️ Duración estimada:</strong> 30-45 minutos</p>
+            </div>
+            
+            <div class="property-info">
+                <h3>Propiedad a Visitar</h3>
+                <p><strong>{{ propiedad.titulo }}</strong></p>
+                <p><strong>Precio:</strong> ${{ propiedad.precio|floatformat:0 }}</p>
+                <p><strong>Características:</strong> {{ propiedad.habitaciones }} habitaciones | {{ propiedad.bano }} baños | {{ propiedad.estacionamiento }} estacionamientos</p>
+            </div>
+            
+            <div class="agent-info">
+                <h3>Tu Agente de Ventas</h3>
+                <p><strong>{{ agente.nombre }} {{ agente.apellido }}</strong></p>
+                {% if agente.telefono %}
+                <p><strong>Teléfono:</strong> <a href="tel:{{ agente.telefono }}">{{ agente.telefono }}</a></p>
+                {% endif %}
+                {% if agente.email %}
+                <p><strong>Email:</strong> <a href="mailto:{{ agente.email }}">{{ agente.email }}</a></p>
+                {% endif %}
+            </div>
+            
+            <div class="highlight">
+                <h4>Recomendaciones para tu visita:</h4>
+                <ul>
+                    <li>Llega 5 minutos antes de la hora acordada</li>
+                    <li>Trae una identificación válida</li>
+                    <li>Prepara tus preguntas sobre la propiedad</li>
+                    <li>Si necesitas reprogramar, contacta al agente con 24h de anticipación</li>
+                </ul>
+            </div>
+            
+            {% if solicitud.respuesta_agente %}
+            <div style="background: white; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <h4>Mensaje del Agente:</h4>
+                <p style="font-style: italic;">{{ solicitud.respuesta_agente }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="footer">
+            <p>Si tienes alguna pregunta o necesitas reprogramar, no dudes en contactar a tu agente.</p>
+            <p><strong>¡Esperamos verte pronto!</strong></p>
+            <hr>
+            <p>Sistema Inmobiliaria - Tu socio de confianza en bienes raíces</p>
+        </div>
+    </div>
+</body>
+</html>

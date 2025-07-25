@@ -1,0 +1,332 @@
+{% extends './base.html' %} 
+{% load static %}
+
+{% block title %}Bienes Raíces Premium - Propiedades de Lujo{% endblock %}
+
+{% block hero %}
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-8">
+                <h1 class="hero-title display-3 fw-bold text-white mb-4">
+                    Encuentra tu <span class="text-primary">hogar perfecto</span>
+                </h1>
+                <p class="hero-subtitle lead text-white-75 mb-5">
+                    Descubre propiedades exclusivas de lujo con la mejor ubicación y amenidades premium
+                </p>
+                <div class="hero-actions">
+                    <a href="{% url 'Propiedades' %}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-search me-2"></i>Ver Propiedades
+                    </a>
+                    <a href="{% url 'Contacto' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>Contactar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-5 fw-bold mb-3">¿Por qué elegirnos?</h2>
+                <p class="lead text-muted">Más de 10 años de experiencia en el mercado inmobiliario</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Seguridad</h4>
+                    <p class="text-muted">Transacciones 100% seguras con asesoría legal completa</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-clock fa-3x text-primary"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Rapidez</h4>
+                    <p class="text-muted">Proceso ágil y eficiente para encontrar tu propiedad ideal</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-award fa-3x text-primary"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Calidad</h4>
+                    <p class="text-muted">Solo las mejores propiedades con estándares premium</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Properties Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="display-5 fw-bold mb-3">Propiedades Destacadas</h2>
+                <p class="lead text-muted">Descubre nuestras mejores ofertas del mes</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for propiedad in propiedades %}
+            <div class="col-lg-4 col-md-6">
+                <div class="property-card h-100">
+                    <div class="property-image-container">
+                        <img src="{% if propiedad.imagen %}{% if propiedad.imagen.url %}{{ propiedad.imagen.url }}{% else %}{% get_media_prefix as MEDIA_PREFIX %}{{ MEDIA_PREFIX }}propiedades/{{ propiedad.imagen }}{% endif %}{% else %}{% static 'sistema_inmobiliaria/img/anuncio1.jpg' %}{% endif %}" 
+                             class="property-image" alt="{{ propiedad.titulo }}">
+                        <div class="property-badge">
+                            <span class="badge bg-primary">Destacada</span>
+                        </div>
+                        <div class="property-overlay">
+                            <div class="overlay-content">
+                                <a href="{% url 'Propiedad' propiedad.id %}" class="btn btn-light btn-sm me-2">
+                                    <i class="fas fa-eye me-1"></i>Ver Detalles
+                                </a>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#contactModal"
+                                        data-propiedad-id="{{ propiedad.id }}"
+                                        data-propiedad-titulo="{{ propiedad.titulo }}"
+                                        data-propiedad-precio="{{ propiedad.precio }}">
+                                    <i class="fas fa-phone me-1"></i>Contactar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="property-content p-4">
+                        <h5 class="property-title fw-bold mb-2">{{ propiedad.titulo }}</h5>
+                        <p class="property-description text-muted mb-3">{{ propiedad.descripcion|truncatewords:15 }}</p>
+                        
+                        <div class="property-features mb-3">
+                            <div class="row g-2 text-center">
+                                <div class="col-4">
+                                    <div class="feature-item">
+                                        <i class="fas fa-bed text-primary"></i>
+                                        <small class="d-block">{{ propiedad.habitaciones }} Hab.</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="feature-item">
+                                        <i class="fas fa-bath text-primary"></i>
+                                        <small class="d-block">{{ propiedad.bano }} Baños</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="feature-item">
+                                        <i class="fas fa-car text-primary"></i>
+                                        <small class="d-block">{{ propiedad.estacionamiento }} Est.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="property-price">
+                                <span class="h4 fw-bold text-primary mb-0">${{ propiedad.precio|floatformat:0 }}</span>
+                            </div>
+                            <a href="{% url 'Propiedad' propiedad.id %}" class="btn btn-outline-primary btn-sm">
+                                Ver Más <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'Propiedades' %}" class="btn btn-primary btn-lg">
+                Ver Todas las Propiedades <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-2">¿Listo para encontrar tu nuevo hogar?</h3>
+                <p class="mb-0">Nuestros expertos están aquí para ayudarte en cada paso del proceso</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'Contacto' %}" class="btn btn-light btn-lg">
+                    <i class="fas fa-phone me-2"></i>Contactar Ahora
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Contactar Agente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Mensajes de éxito/error -->
+                <div id="modalMessages"></div>
+                
+                <form id="contactForm" method="POST" action="{% url 'Contacto' %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="modalPropiedadId" name="propiedad_id" value="">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="modalNombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="modalNombre" name="nombre" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modalTelefono" class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" id="modalTelefono" name="telefono" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalEmail" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="modalEmail" name="email" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalMensaje" class="form-label">Mensaje *</label>
+                            <textarea class="form-control" id="modalMensaje" name="mensaje" rows="3" 
+                                placeholder="Estoy interesado en esta propiedad..." required></textarea>
+                        </div>
+                        <input type="hidden" name="tipo" value="Compra">
+                        <input type="hidden" name="precio" value="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="contactForm" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Contact modal functionality
+    const contactModal = document.getElementById('contactModal');
+    const contactForm = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const modalMessages = document.getElementById('modalMessages');
+    
+    // Handle modal open - capture property data
+    contactModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget; // Button that triggered the modal
+        const propiedadId = button.getAttribute('data-propiedad-id');
+        const propiedadTitulo = button.getAttribute('data-propiedad-titulo');
+        const propiedadPrecio = button.getAttribute('data-propiedad-precio');
+        
+        console.log('Modal abierto para propiedad:', propiedadId, propiedadTitulo, propiedadPrecio);
+        
+        // Update hidden fields
+        document.getElementById('modalPropiedadId').value = propiedadId || '';
+        document.querySelector('input[name="precio"]').value = propiedadPrecio || '';
+        
+        // Update modal title to include property info
+        const modalTitle = contactModal.querySelector('.modal-title');
+        if (propiedadTitulo) {
+            modalTitle.textContent = `Contactar Agente - ${propiedadTitulo}`;
+        } else {
+            modalTitle.textContent = 'Contactar Agente';
+        }
+        
+        // Pre-fill message with property reference
+        const mensajeTextarea = document.getElementById('modalMensaje');
+        if (propiedadTitulo && !mensajeTextarea.value) {
+            mensajeTextarea.value = `Estoy interesado/a en la propiedad: ${propiedadTitulo}. Me gustaría obtener más información.`;
+        }
+    });
+    
+    // Handle contact form submission
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+        
+        // Clear previous messages
+        modalMessages.innerHTML = '';
+        
+        try {
+            const formData = new FormData(contactForm);
+            console.log('Enviando datos:', Object.fromEntries(formData));
+            
+            const response = await fetch(contactForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            if (response.ok) {
+                // Show success message
+                modalMessages.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        ¡Gracias por contactarnos! Hemos recibido tu mensaje y nos pondremos en contacto contigo en breve.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                
+                // Clear form
+                contactForm.reset();
+                
+                // Close modal after 3 seconds
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(contactModal);
+                    modal.hide();
+                }, 3000);
+            } else {
+                throw new Error('Error en el servidor');
+            }
+        } catch (error) {
+            console.error('Error enviando formulario:', error);
+            // Show error message
+            modalMessages.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Hubo un error enviando tu mensaje. Por favor inténtalo nuevamente.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        } finally {
+            // Restore button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+    
+    // Clear modal when it's closed
+    contactModal.addEventListener('hidden.bs.modal', function() {
+        contactForm.reset();
+        modalMessages.innerHTML = '';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Enviar Mensaje';
+    });
+});
+</script>
+{% endblock %}

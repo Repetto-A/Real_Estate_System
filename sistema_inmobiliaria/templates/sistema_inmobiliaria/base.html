@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --primary-light: #2c5aa0;
+            --secondary-color: #f8b500;
+            --accent-color: #e74c3c;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --gradient-primary: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            --gradient-secondary: linear-gradient(135deg, #f8b500 0%, #e67e22 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Navigation */
+        .navbar-modern {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-modern.scrolled {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            transition: transform 0.3s ease;
+            filter: invert(1);
+        }
+
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+        }
+
+        .dark-mode .navbar-brand img {
+            filter: invert(0);
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: #333 !important;
+            margin: 0 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #000 !important; /* Negro en light mode */
+        }
+        
+        /* Dark mode navbar styles */
+        .dark-mode .navbar-nav .nav-link {
+            color: #e0e0e0 !important;
+        }
+        
+        .dark-mode .navbar-nav .nav-link:hover {
+            color: #fff !important; /* Blanco en dark mode */
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: #000; /* Negro en light mode */
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .dark-mode .navbar-nav .nav-link::after {
+            background: #fff; /* Blanco en dark mode */
+        }
+
+        .navbar-nav .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            /* background-image: url('{% static "sistema_inmobiliaria/img/encuentra.jpg" %}'); */
+            background-image: url('{% static "sistema_inmobiliaria/img/header.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .hero-section .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .text-white-75 {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            box-shadow: 0 4px 15px rgba(44, 90, 160, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(44, 90, 160, 0.4);
+        }
+
+        .btn-outline-light:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+        }
+
+        /* Property Cards */
+        .property-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .property-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+
+        .property-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .property-card:hover .property-image {
+            transform: scale(1.1);
+        }
+
+        .property-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 2;
+        }
+
+        .property-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(44, 90, 160, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .property-card:hover .property-overlay {
+            opacity: 1;
+        }
+
+        .property-title {
+            color: #2c3e50;
+            font-size: 1.25rem;
+        }
+
+        .property-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .feature-item {
+            padding: 10px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .feature-item:hover i {
+            color: white !important;
+        }
+
+        /* Footer */
+        .footer-modern {
+            background: #2c3e50;
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-modern .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transition: color 0.3s ease;
+        }
+
+        .footer-modern .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            background: none;
+            border: 2px solid #333;
+            border-radius: 50px;
+            padding: 8px 15px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            background: #333;
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .navbar-modern {
+            background: rgba(26, 26, 26, 0.98);
+            border-bottom: 1px solid #333;
+        }
+
+        .dark-mode .navbar-modern.scrolled {
+            background: rgba(26, 26, 26, 1);
+        }
+
+        /* Estas reglas se movieron arriba para evitar conflictos */
+
+        .dark-mode .bg-light {
+            background-color: #2d2d2d !important;
+        }
+
+        .dark-mode .feature-card {
+            background: #333;
+            color: #e0e0e0;
+            border: 1px solid #444;
+        }
+
+        .dark-mode .property-card {
+            background: #333;
+            color: #e0e0e0;
+            border: 1px solid #444;
+        }
+
+        .dark-mode .feature-item {
+            background: #444 !important;
+            color: #e0e0e0 !important;
+            border: 1px solid #555;
+        }
+
+        .dark-mode .feature-item:hover {
+            background: var(--primary-color) !important;
+            color: white !important;
+        }
+
+        .dark-mode .property-title {
+            color: #f0f0f0 !important;
+        }
+
+        .dark-mode .property-description {
+            color: #c0c0c0 !important;
+        }
+
+        .dark-mode .text-muted {
+            color: #b0b0b0 !important;
+        }
+
+        .dark-mode .footer-modern {
+            background: #111;
+        }
+
+        .dark-mode .btn-outline-secondary {
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .btn-outline-secondary:hover {
+            background: #555;
+            border-color: #555;
+        }
+
+        .dark-mode .form-select {
+            background-color: #333;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .modal-content {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .form-control {
+            background-color: #444;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .dropdown-menu {
+            background-color: #333;
+            border-color: #555;
+        }
+
+        .dark-mode .dropdown-item {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .dropdown-item:hover {
+            background-color: #444;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 10px 25px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+
+    <title>{% block title %}Bienes Raíces Premium{% endblock %}</title>
+    <link rel="shortcut icon" href="{% static 'sistema_inmobiliaria/img/favicon.ico' %}" type="image/x-icon">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-modern">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'sistema_inmobiliaria/img/logo.svg' %}" alt="Bienes Raíces Premium">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Nosotros' %}">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Propiedades' %}">Propiedades</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Blog' %}">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Contacto' %}">Contacto</a>
+                    </li>
+                </ul>
+                
+                <button class="dark-mode-toggle ms-3" id="darkModeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section (only on homepage) -->
+    {% block hero %}{% endblock %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-modern">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold mb-3">Bienes Raíces Premium</h5>
+                    <p class="text-white-50">Tu socio de confianza en el mercado inmobiliario. Más de 10 años conectando familias con sus hogares ideales.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3">Enlaces</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="nav-link p-0 mb-2">Inicio</a></li>
+                        <li><a href="{% url 'Nosotros' %}" class="nav-link p-0 mb-2">Nosotros</a></li>
+                        <li><a href="{% url 'Propiedades' %}" class="nav-link p-0 mb-2">Propiedades</a></li>
+                        <li><a href="{% url 'Blog' %}" class="nav-link p-0">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3">Servicios</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="nav-link p-0 mb-2">Venta de Propiedades</a></li>
+                        <li><a href="#" class="nav-link p-0 mb-2">Alquiler</a></li>
+                        <li><a href="#" class="nav-link p-0 mb-2">Asesoría Legal</a></li>
+                        <li><a href="#" class="nav-link p-0">Valuaciones</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6 class="fw-bold mb-3">Contacto</h6>
+                    <p class="text-white-50 mb-2"><i class="fas fa-map-marker-alt me-2"></i>Av. Principal 123, Ciudad</p>
+                    <p class="text-white-50 mb-2"><i class="fas fa-phone me-2"></i>+1 234 567 8900</p>
+                    <p class="text-white-50"><i class="fas fa-envelope me-2"></i>info@bienesraices.com</p>
+                </div>
+            </div>
+            <hr class="my-4 text-white-50">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-white-50 mb-0">&copy; {% now 'Y' %} Bienes Raíces Premium. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-white-50 me-3">Política de Privacidad</a>
+                    <a href="#" class="text-white-50">Términos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-modern');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        // Initialize dark mode (enabled by default)
+        const darkModePreference = localStorage.getItem('darkMode');
+        if (darkModePreference === null || darkModePreference === 'enabled') {
+            body.classList.add('dark-mode');
+            document.querySelector('#darkModeToggle i').className = 'fas fa-sun';
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            body.classList.remove('dark-mode');
+            document.querySelector('#darkModeToggle i').className = 'fas fa-moon';
+        }
+
+        darkModeToggle.addEventListener('click', function() {
+            body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            if (body.classList.contains('dark-mode')) {
+                icon.className = 'fas fa-sun';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                icon.className = 'fas fa-moon';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation classes on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in-up');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.property-card, .feature-card').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Newsletter subscription functionality
+        function initNewsletterForms() {
+            const newsletterForms = document.querySelectorAll('.newsletter-form');
+            
+            newsletterForms.forEach(form => {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const emailInput = form.querySelector('.newsletter-email, input[type="email"]');
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const email = emailInput.value.trim();
+                    
+                    if (!email) {
+                        showNewsletterMessage('Por favor ingresa tu email', 'error');
+                        return;
+                    }
+                    
+                    // Disable button and show loading
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Suscribiendo...';
+                    
+                    try {
+                        const response = await fetch('{% url "suscribir_newsletter" %}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCookie('csrftoken')
+                            },
+                            body: JSON.stringify({ email: email })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            showNewsletterMessage(data.message, 'success');
+                            emailInput.value = '';
+                        } else {
+                            showNewsletterMessage(data.message, 'error');
+                        }
+                    } catch (error) {
+                        showNewsletterMessage('Error al procesar la suscripción. Inténtalo de nuevo.', 'error');
+                    } finally {
+                        // Restore button
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                });
+            });
+        }
+        
+        function showNewsletterMessage(message, type) {
+            // Remove existing messages
+            const existingMessages = document.querySelectorAll('.newsletter-message');
+            existingMessages.forEach(msg => msg.remove());
+            
+            // Create new message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} newsletter-message mt-2`;
+            messageDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+            `;
+            
+            // Find the first newsletter form and append message
+            const firstForm = document.querySelector('.newsletter-form');
+            if (firstForm) {
+                firstForm.parentNode.insertBefore(messageDiv, firstForm.nextSibling);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 5000);
+            }
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Initialize newsletter forms when page loads
+        document.addEventListener('DOMContentLoaded', initNewsletterForms);
+    </script>
+</body>
+</html>

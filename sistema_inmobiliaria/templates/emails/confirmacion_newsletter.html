@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirma tu suscripción al newsletter</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #17a2b8; color: white; padding: 20px; text-align: center; }
+        .content { background: #f8f9fa; padding: 20px; }
+        .confirmation-box { background: white; padding: 20px; margin: 20px 0; text-align: center; border-radius: 8px; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+        .btn { display: inline-block; padding: 15px 30px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .btn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Bienvenido a nuestro Newsletter!</h1>
+            <p>Confirma tu suscripción para recibir las mejores ofertas inmobiliarias</p>
+        </div>
+        
+        <div class="content">
+            <div class="confirmation-box">
+                <h2>Hola{% if suscriptor.nombre %} {{ suscriptor.nombre }}{% endif %}!</h2>
+                <p>Gracias por suscribirte a nuestro newsletter. Para completar tu suscripción y comenzar a recibir:</p>
+                
+                <ul style="text-align: left; display: inline-block;">
+                    <li>🏠 Las mejores propiedades disponibles</li>
+                    <li>💰 Ofertas exclusivas y descuentos</li>
+                    <li>📊 Informes del mercado inmobiliario</li>
+                    <li>📧 Consejos para comprar o vender</li>
+                </ul>
+                
+                <p><strong>Solo necesitas confirmar tu email haciendo clic en el botón de abajo:</strong></p>
+                
+                <a href="{{ confirm_url }}" class="btn">
+                    Confirmar Suscripción
+                </a>
+                
+                <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                    Si no puedes hacer clic en el botón, copia y pega este enlace en tu navegador:<br>
+                    <a href="{{ confirm_url }}">{{ confirm_url }}</a>
+                </p>
+            </div>
+            
+            <div style="background: white; padding: 15px; margin: 15px 0; border-radius: 8px;">
+                <h3>¿Por qué confirmar tu email?</h3>
+                <p>La confirmación nos ayuda a:</p>
+                <ul>
+                    <li>Asegurar que recibes nuestros emails</li>
+                    <li>Proteger tu privacidad</li>
+                    <li>Cumplir con las regulaciones de email marketing</li>
+                    <li>Enviarte contenido relevante y personalizado</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Si no te suscribiste a nuestro newsletter, puedes ignorar este email.</p>
+            <p>Este enlace de confirmación expirará en 7 días por seguridad.</p>
+            <hr>
+            <p><strong>Sistema Inmobiliaria</strong><br>
+            Tu socio de confianza en bienes raíces</p>
+        </div>
+    </div>
+</body>
+</html>

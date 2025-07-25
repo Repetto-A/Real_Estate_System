@@ -1,0 +1,144 @@
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Contactar Agente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Mensajes de éxito/error -->
+                <div id="modalMessages"></div>
+                
+                <form id="contactForm" method="POST" action="{% url 'Contacto' %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="modalPropiedadId" name="propiedad_id" value="">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="modalNombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="modalNombre" name="nombre" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modalTelefono" class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" id="modalTelefono" name="telefono" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalEmail" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="modalEmail" name="email" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalMensaje" class="form-label">Mensaje *</label>
+                            <textarea class="form-control" id="modalMensaje" name="mensaje" rows="3" 
+                                placeholder="Estoy interesado en esta propiedad..." required></textarea>
+                        </div>
+                        <input type="hidden" name="tipo" value="Compra">
+                        <input type="hidden" name="precio" value="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="contactForm" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Contact modal functionality
+    const contactModal = document.getElementById('contactModal');
+    const contactForm = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const modalMessages = document.getElementById('modalMessages');
+    
+    // Handle modal open - capture property data
+    contactModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const propiedadId = button.getAttribute('data-propiedad-id');
+        const propiedadTitulo = button.getAttribute('data-propiedad-titulo');
+        const propiedadPrecio = button.getAttribute('data-propiedad-precio');
+        
+        console.log('Modal abierto para propiedad:', propiedadId, propiedadTitulo, propiedadPrecio);
+        
+        // Update hidden fields
+        document.getElementById('modalPropiedadId').value = propiedadId || '';
+        document.querySelector('input[name="precio"]').value = propiedadPrecio || '';
+        
+        // Update modal title to include property info
+        const modalTitle = contactModal.querySelector('.modal-title');
+        if (propiedadTitulo) {
+            modalTitle.textContent = `Contactar Agente - ${propiedadTitulo}`;
+        } else {
+            modalTitle.textContent = 'Contactar Agente';
+        }
+        
+        // Pre-fill message with property reference
+        const mensajeTextarea = document.getElementById('modalMensaje');
+        if (propiedadTitulo && !mensajeTextarea.value) {
+            mensajeTextarea.value = `Estoy interesado/a en la propiedad: ${propiedadTitulo}. Me gustaría obtener más información.`;
+        }
+    });
+    
+    // Handle contact form submission
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+        modalMessages.innerHTML = '';
+        
+        try {
+            const formData = new FormData(contactForm);
+            console.log('Enviando datos:', Object.fromEntries(formData));
+            
+            const response = await fetch(contactForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            
+            if (response.ok) {
+                modalMessages.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        ¡Gracias por contactarnos! Hemos recibido tu mensaje y nos pondremos en contacto contigo en breve.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                contactForm.reset();
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(contactModal);
+                    modal.hide();
+                }, 3000);
+            } else {
+                throw new Error('Error en el servidor');
+            }
+        } catch (error) {
+            console.error('Error enviando formulario:', error);
+            modalMessages.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Hubo un error enviando tu mensaje. Por favor inténtalo nuevamente.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+    
+    // Clear modal when it's closed
+    contactModal.addEventListener('hidden.bs.modal', function() {
+        contactForm.reset();
+        modalMessages.innerHTML = '';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Enviar Mensaje';
+    });
+});
+</script>

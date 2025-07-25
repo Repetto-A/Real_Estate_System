@@ -1,0 +1,687 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %}{{ propiedad.titulo }} - Bienes Raíces Premium{% endblock %}
+
+{% block content %}
+<!-- Property Header -->
+<section class="py-5 mt-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'Propiedades' %}">Propiedades</a></li>
+                        <li class="breadcrumb-item active">{{ propiedad.titulo }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Property Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Property Image -->
+            <div class="col-lg-8">
+                <div class="property-image-gallery">
+                    <div class="main-image mb-3">
+                        <img src="{% if propiedad.imagen %}{% if propiedad.imagen.url %}{{ propiedad.imagen.url }}{% else %}{% get_media_prefix as MEDIA_PREFIX %}{{ MEDIA_PREFIX }}propiedades/{{ propiedad.imagen }}{% endif %}{% else %}{% static 'sistema_inmobiliaria/img/anuncio1.jpg' %}{% endif %}" 
+                             class="img-fluid rounded-3 shadow" 
+                             alt="{{ propiedad.titulo }}">
+                    </div>
+                </div>
+                
+                <!-- Property Description -->
+                <div class="property-description mt-5">
+                    <h3 class="fw-bold mb-4">Descripción de la Propiedad</h3>
+                    <p class="lead text-muted">{{ propiedad.descripcion }}</p>
+                </div>
+                
+                <!-- Property Features -->
+                <div class="property-amenities mt-5">
+                    <h3 class="fw-bold mb-4">Características</h3>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="amenity-item text-center p-3">
+                                <i class="fas fa-bed fa-2x text-primary mb-2"></i>
+                                <h5 class="fw-bold">{{ propiedad.habitaciones }}</h5>
+                                <p class="text-muted mb-0">Habitaciones</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="amenity-item text-center p-3">
+                                <i class="fas fa-bath fa-2x text-primary mb-2"></i>
+                                <h5 class="fw-bold">{{ propiedad.bano }}</h5>
+                                <p class="text-muted mb-0">Baños</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="amenity-item text-center p-3">
+                                <i class="fas fa-car fa-2x text-primary mb-2"></i>
+                                <h5 class="fw-bold">{{ propiedad.estacionamiento }}</h5>
+                                <p class="text-muted mb-0">Estacionamientos</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Property Sidebar -->
+            <div class="col-lg-4">
+                <div class="property-sidebar">
+                    <!-- Price Card -->
+                    <div class="price-card bg-white p-4 rounded-3 shadow mb-4">
+                        <h1 class="property-title fw-bold mb-3">{{ propiedad.titulo }}</h1>
+                        <div class="property-price mb-4">
+                            <span class="h2 fw-bold text-primary">${{ propiedad.precio|floatformat:0 }}</span>
+                            <small class="text-muted d-block">Precio total</small>
+                        </div>
+                        
+                        <!-- Quick Features -->
+                        <div class="quick-features mb-4">
+                            <div class="row g-2 text-center">
+                                <div class="col-4">
+                                    <div class="feature-badge">
+                                        <i class="fas fa-bed text-primary"></i>
+                                        <small class="d-block">{{ propiedad.habitaciones }} Hab.</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="feature-badge">
+                                        <i class="fas fa-bath text-primary"></i>
+                                        <small class="d-block">{{ propiedad.bano }} Baños</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="feature-badge">
+                                        <i class="fas fa-car text-primary"></i>
+                                        <small class="d-block">{{ propiedad.estacionamiento }} Est.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Buttons -->
+                        <div class="contact-buttons">
+                            <button class="btn btn-primary btn-lg w-100 mb-3" data-bs-toggle="modal" data-bs-target="#contactModal"
+                                    data-propiedad-id="{{ propiedad.id }}"
+                                    data-propiedad-titulo="{{ propiedad.titulo }}"
+                                    data-propiedad-precio="{{ propiedad.precio }}">
+                                <i class="fas fa-phone me-2"></i>Contactar Agente
+                            </button>
+                            <button class="btn btn-outline-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#scheduleModal"
+                                    data-propiedad-id="{{ propiedad.id }}"
+                                    data-propiedad-titulo="{{ propiedad.titulo }}"
+                                    data-propiedad-direccion="{{ propiedad.direccion }}">
+                                <i class="fas fa-calendar me-2"></i>Agendar Visita
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Agent Info -->
+                    {% if propiedad.vendedor_id %}
+                    <div class="agent-card bg-white p-4 rounded-3 shadow mb-4">
+                        <h5 class="fw-bold mb-3">Agente de Ventas</h5>
+                        <div class="agent-info">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="agent-avatar me-3">
+                                    {% if propiedad.vendedor_id.foto %}
+                                        <img src="{{ propiedad.vendedor_id.foto.url }}" 
+                                             alt="{{ propiedad.vendedor_id.nombre }} {{ propiedad.vendedor_id.apellido }}" 
+                                             class="rounded-circle" 
+                                             style="width: 50px; height: 50px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-user text-white"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">{{ propiedad.vendedor_id.nombre }} {{ propiedad.vendedor_id.apellido }}</h6>
+                                    <small class="text-muted">Agente Inmobiliario</small>
+                                </div>
+                            </div>
+                            <div class="agent-contact">
+                                <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>{{ propiedad.vendedor_id.telefono }}</p>
+                                {% if propiedad.vendedor_id.email %}
+                                <p class="mb-0"><i class="fas fa-envelope text-primary me-2"></i>{{ propiedad.vendedor_id.email }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Property Info -->
+                    <div class="property-info-card bg-white p-4 rounded-3 shadow">
+                        <h5 class="fw-bold mb-3">Información de la Propiedad</h5>
+                        <div class="info-list">
+                            <div class="info-item d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">ID de Propiedad:</span>
+                                <span class="fw-semibold">#{{ propiedad.id }}</span>
+                            </div>
+                            <div class="info-item d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Fecha de Publicación:</span>
+                                <span class="fw-semibold">{{ propiedad.creado|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="info-item d-flex justify-content-between py-2">
+                                <span class="text-muted">Estado:</span>
+                                <span class="badge bg-success">Disponible</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Properties -->
+{% if propiedades_relacionadas %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="fw-bold text-center">Propiedades Relacionadas</h3>
+                <p class="text-muted text-center">Otras propiedades que podrían interesarte</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% for prop in propiedades_relacionadas %}
+            <div class="col-lg-4">
+                <div class="property-card h-100">
+                    <div class="property-image-container">
+                        <img src="{% if prop.imagen %}{% if prop.imagen.url %}{{ prop.imagen.url }}{% else %}{% get_media_prefix as MEDIA_PREFIX %}{{ MEDIA_PREFIX }}propiedades/{{ prop.imagen }}{% endif %}{% else %}{% static 'sistema_inmobiliaria/img/anuncio1.jpg' %}{% endif %}" 
+                             class="property-image" alt="{{ prop.titulo }}">
+                        <div class="property-overlay">
+                            <a href="{% url 'Propiedad' prop.id %}" class="btn btn-light btn-sm">
+                                <i class="fas fa-eye me-1"></i>Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="property-content p-4">
+                        <h5 class="property-title fw-bold mb-2">{{ prop.titulo }}</h5>
+                        <p class="property-description text-muted mb-3">{{ prop.descripcion|truncatewords:15 }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="property-price">
+                                <span class="h5 fw-bold text-primary mb-0">${{ prop.precio|floatformat:0 }}</span>
+                            </div>
+                            <a href="{% url 'Propiedad' prop.id %}" class="btn btn-outline-primary btn-sm">
+                                Ver Más
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Contactar Agente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Mensajes de éxito/error -->
+                <div id="modalMessages"></div>
+                
+                <form id="contactForm" method="POST" action="{% url 'Contacto' %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="modalPropiedadId" name="propiedad_id" value="{{ propiedad.id }}">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="modalNombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="modalNombre" name="nombre" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modalTelefono" class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" id="modalTelefono" name="telefono" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalEmail" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="modalEmail" name="email" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalMensaje" class="form-label">Mensaje *</label>
+                            <textarea class="form-control" id="modalMensaje" name="mensaje" rows="3" 
+                                placeholder="Estoy interesado en la propiedad {{ propiedad.titulo }}..." required></textarea>
+                        </div>
+                        <input type="hidden" name="tipo" value="Compra">
+                        <input type="hidden" name="precio" value="{{ propiedad.precio }}">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="contactForm" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schedule Visit Modal -->
+<div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agendar Visita</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Mensajes de éxito/error -->
+                <div id="scheduleMessages"></div>
+                
+                <form id="scheduleForm" method="POST" action="{% url 'Contacto' %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="schedulePropiedadId" name="propiedad_id" value="{{ propiedad.id }}">
+                    <input type="hidden" name="tipo" value="Visita">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="scheduleNombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="scheduleNombre" name="nombre" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="scheduleTelefono" class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" id="scheduleTelefono" name="telefono" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="scheduleEmail" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="scheduleEmail" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="scheduleFecha" class="form-label">Fecha Preferida *</label>
+                            <input type="date" class="form-control" id="scheduleFecha" name="fecha_visita" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="scheduleHora" class="form-label">Hora Preferida *</label>
+                            <select class="form-select" id="scheduleHora" name="hora_visita" required>
+                                <option value="">Seleccionar hora</option>
+                                <option value="09:00">9:00 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="scheduleMensaje" class="form-label">Comentarios Adicionales</label>
+                            <textarea class="form-control" id="scheduleMensaje" name="mensaje" rows="3" 
+                                placeholder="Solicito agendar una visita para la propiedad..."></textarea>
+                        </div>
+                        <input type="hidden" name="precio" value="{{ propiedad.precio }}">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="scheduleForm" class="btn btn-primary" id="scheduleSubmitBtn">
+                    <i class="fas fa-calendar-plus me-2"></i>Agendar Visita
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Contactar Agente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Mensajes de éxito/error -->
+                <div id="modalMessages"></div>
+                
+                <form id="contactForm" method="POST" action="{% url 'Contacto' %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="modalPropiedadId" name="propiedad_id" value="">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="modalNombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="modalNombre" name="nombre" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modalTelefono" class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" id="modalTelefono" name="telefono" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalEmail" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="modalEmail" name="email" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="modalMensaje" class="form-label">Mensaje *</label>
+                            <textarea class="form-control" id="modalMensaje" name="mensaje" rows="3" 
+                                placeholder="Escribe tu mensaje aquí..." required></textarea>
+                        </div>
+                        <input type="hidden" name="tipo" value="Compra">
+                        <input type="hidden" name="precio" value="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="contactForm" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Contact modal functionality
+    const contactModal = document.getElementById('contactModal');
+    const contactForm = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const modalMessages = document.getElementById('modalMessages');
+    
+    // Handle modal open - capture property data
+    contactModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const propiedadId = button.getAttribute('data-propiedad-id');
+        const propiedadTitulo = button.getAttribute('data-propiedad-titulo');
+        const propiedadPrecio = button.getAttribute('data-propiedad-precio');
+        
+        console.log('Modal abierto para propiedad:', propiedadId, propiedadTitulo, propiedadPrecio);
+        
+        // Update hidden fields
+        document.getElementById('modalPropiedadId').value = propiedadId || '';
+        document.querySelector('input[name="precio"]').value = propiedadPrecio || '';
+        
+        // Update modal title to include property info
+        const modalTitle = contactModal.querySelector('.modal-title');
+        if (propiedadTitulo) {
+            modalTitle.textContent = `Contactar Agente - ${propiedadTitulo}`;
+        } else {
+            modalTitle.textContent = 'Contactar Agente';
+        }
+        
+        // Pre-fill message with property reference
+        const mensajeTextarea = document.getElementById('modalMensaje');
+        console.log('Textarea encontrado:', mensajeTextarea);
+        if (propiedadTitulo) {
+            const mensaje = `Estoy interesado/a en la propiedad: ${propiedadTitulo}. Me gustaría obtener más información.`;
+            mensajeTextarea.value = mensaje;
+            console.log('Mensaje asignado:', mensaje);
+            console.log('Valor actual del textarea:', mensajeTextarea.value);
+        }
+    });
+    
+    // Handle contact form submission
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+        modalMessages.innerHTML = '';
+        
+        try {
+            const formData = new FormData(contactForm);
+            console.log('Enviando datos:', Object.fromEntries(formData));
+            
+            const response = await fetch(contactForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            
+            if (response.ok) {
+                modalMessages.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        ¡Gracias por contactarnos! Hemos recibido tu mensaje y nos pondremos en contacto contigo en breve.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                contactForm.reset();
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(contactModal);
+                    modal.hide();
+                }, 3000);
+            } else {
+                throw new Error('Error en el servidor');
+            }
+        } catch (error) {
+            console.error('Error enviando formulario:', error);
+            modalMessages.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Hubo un error enviando tu mensaje. Por favor inténtalo nuevamente.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+    
+    // Clear modal when it's closed
+    contactModal.addEventListener('hidden.bs.modal', function() {
+        contactForm.reset();
+        modalMessages.innerHTML = '';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Enviar Mensaje';
+    });
+    
+    // Schedule Visit Modal functionality
+    const scheduleModal = document.getElementById('scheduleModal');
+    const scheduleForm = document.getElementById('scheduleForm');
+    const scheduleSubmitBtn = document.getElementById('scheduleSubmitBtn');
+    const scheduleMessages = document.getElementById('scheduleMessages');
+    
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('scheduleFecha').setAttribute('min', today);
+    
+    // Handle schedule modal open - capture property data
+    scheduleModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const propiedadId = button.getAttribute('data-propiedad-id');
+        const propiedadTitulo = button.getAttribute('data-propiedad-titulo');
+        const propiedadDireccion = button.getAttribute('data-propiedad-direccion');
+        
+        console.log('Schedule modal abierto para propiedad:', propiedadId, propiedadTitulo);
+        
+        // Update hidden field
+        document.getElementById('schedulePropiedadId').value = propiedadId || '';
+        
+        // Update modal title to include property info
+        const modalTitle = scheduleModal.querySelector('.modal-title');
+        if (propiedadTitulo) {
+            modalTitle.textContent = `Agendar Visita - ${propiedadTitulo}`;
+        } else {
+            modalTitle.textContent = 'Agendar Visita';
+        }
+        
+        // Pre-fill message with property reference
+        const mensajeTextarea = document.getElementById('scheduleMensaje');
+        if (propiedadTitulo && propiedadDireccion) {
+            const mensaje = `Solicito agendar una visita para la propiedad: ${propiedadTitulo} ubicada en ${propiedadDireccion}. Quedo atento a su confirmación.`;
+            mensajeTextarea.value = mensaje;
+        }
+    });
+    
+    // Handle schedule form submission
+    scheduleForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const originalText = scheduleSubmitBtn.innerHTML;
+        scheduleSubmitBtn.disabled = true;
+        scheduleSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+        scheduleMessages.innerHTML = '';
+        
+        try {
+            const formData = new FormData(scheduleForm);
+            console.log('Enviando solicitud de visita:', Object.fromEntries(formData));
+            
+            const response = await fetch(scheduleForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            
+            if (response.ok) {
+                scheduleMessages.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        ¡Solicitud de visita enviada exitosamente! El vendedor revisará tu solicitud y te contactará para confirmar la fecha y hora.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                scheduleForm.reset();
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(scheduleModal);
+                    modal.hide();
+                }, 4000);
+            } else {
+                throw new Error('Error en el servidor');
+            }
+        } catch (error) {
+            console.error('Error enviando solicitud de visita:', error);
+            scheduleMessages.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Hubo un error enviando tu solicitud. Por favor inténtalo nuevamente.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        } finally {
+            scheduleSubmitBtn.disabled = false;
+            scheduleSubmitBtn.innerHTML = originalText;
+        }
+    });
+    
+    // Clear schedule modal when it's closed
+    scheduleModal.addEventListener('hidden.bs.modal', function() {
+        scheduleForm.reset();
+        scheduleMessages.innerHTML = '';
+        scheduleSubmitBtn.disabled = false;
+        scheduleSubmitBtn.innerHTML = '<i class="fas fa-calendar-plus me-2"></i>Agendar Visita';
+        // Reset minimum date
+        document.getElementById('scheduleFecha').setAttribute('min', today);
+    });
+});
+</script>
+
+<!-- Additional Styles -->
+<style>
+    .property-image-gallery .main-image img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+    
+    .amenity-item {
+        background: #f8f9fa;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .amenity-item:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-5px);
+    }
+    
+    .amenity-item:hover i {
+        color: white !important;
+    }
+    
+    .feature-badge {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 10px 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-badge:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .feature-badge:hover i {
+        color: white !important;
+    }
+    
+    .price-card, .agent-card, .property-info-card {
+        border: 1px solid #e9ecef;
+    }
+    
+    .breadcrumb-item a {
+        text-decoration: none;
+        color: var(--primary-color);
+    }
+    
+    .breadcrumb-item a:hover {
+        color: var(--primary-light);
+    }
+    
+    /* Dark mode adjustments */
+    .dark-mode .price-card,
+    .dark-mode .agent-card,
+    .dark-mode .property-info-card {
+        background: #333 !important;
+        border-color: #444;
+    }
+    
+    .dark-mode .amenity-item {
+        background: #444;
+        color: #e0e0e0;
+    }
+    
+    .dark-mode .feature-badge {
+        background: #444;
+        color: #e0e0e0;
+    }
+    
+    .dark-mode .info-item {
+        border-color: #444 !important;
+    }
+    
+    .dark-mode .breadcrumb {
+        background: #2d2d2d;
+    }
+    
+    .dark-mode .breadcrumb-item.active {
+        color: #e0e0e0 !important;
+    }
+    
+    .dark-mode .breadcrumb-item + .breadcrumb-item::before {
+        color: #888 !important;
+    }
+    
+    /* Badge alignment fix */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+</style>
+
+{% endblock %}

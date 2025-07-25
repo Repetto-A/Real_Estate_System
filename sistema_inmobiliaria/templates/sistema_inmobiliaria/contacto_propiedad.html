@@ -1,0 +1,165 @@
+{% extends 'sistema_inmobiliaria/base.html' %}
+{% load static %}
+
+{% block title %}Contactar Agente - {{ propiedad.titulo }}{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<section class="py-5 mt-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'Propiedades' %}">Propiedades</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'Propiedad' propiedad.id %}">{{ propiedad.titulo }}</a></li>
+                        <li class="breadcrumb-item active">Contactar Agente</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white text-center py-4">
+                        <h2 class="mb-0">
+                            <i class="fas fa-phone me-2"></i>Contactar Agente
+                        </h2>
+                        <p class="mb-0 mt-2">Consulta sobre: <strong>{{ propiedad.titulo }}</strong></p>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        <!-- Property Summary -->
+                        <div class="property-summary mb-4 p-3 bg-light rounded">
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <img src="{% if propiedad.imagen %}{% if propiedad.imagen.url %}{{ propiedad.imagen.url }}{% else %}{% get_media_prefix as MEDIA_PREFIX %}{{ MEDIA_PREFIX }}propiedades/{{ propiedad.imagen }}{% endif %}{% else %}{% static 'sistema_inmobiliaria/img/anuncio1.jpg' %}{% endif %}" 
+                                         class="img-fluid rounded" alt="{{ propiedad.titulo }}">
+                                </div>
+                                <div class="col-md-9">
+                                    <h5 class="fw-bold">{{ propiedad.titulo }}</h5>
+                                    <p class="text-muted mb-2">{{ propiedad.descripcion|truncatewords:20 }}</p>
+                                    <div class="d-flex align-items-center">
+                                        <span class="h5 text-primary fw-bold me-3">${{ propiedad.precio|floatformat:0 }}</span>
+                                        <small class="text-muted">
+                                            <i class="fas fa-bed me-1"></i>{{ propiedad.habitaciones }}
+                                            <i class="fas fa-bath ms-2 me-1"></i>{{ propiedad.bano }}
+                                            <i class="fas fa-car ms-2 me-1"></i>{{ propiedad.estacionamiento }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Agent Info -->
+                        {% if propiedad.vendedor_id %}
+                        <div class="agent-info mb-4 p-3 border rounded">
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-user-tie me-2"></i>Agente Asignado
+                            </h6>
+                            <p class="mb-1"><strong>{{ propiedad.vendedor_id.nombre }} {{ propiedad.vendedor_id.apellido }}</strong></p>
+                            {% if propiedad.vendedor_id.email %}
+                                <p class="mb-1"><i class="fas fa-envelope me-2"></i>{{ propiedad.vendedor_id.email }}</p>
+                            {% endif %}
+                            {% if propiedad.vendedor_id.telefono %}
+                                <p class="mb-0"><i class="fas fa-phone me-2"></i>{{ propiedad.vendedor_id.telefono }}</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Contact Form -->
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.nombre.id_for_label }}" class="form-label">
+                                        {{ form.nombre.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.nombre }}
+                                    {% if form.nombre.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.nombre.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                                        {{ form.email.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.email.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.telefono.id_for_label }}" class="form-label">
+                                    {{ form.telefono.label }}
+                                </label>
+                                {{ form.telefono }}
+                                {% if form.telefono.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.telefono.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="{{ form.mensaje.id_for_label }}" class="form-label">
+                                    {{ form.mensaje.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.mensaje }}
+                                {% if form.mensaje.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.mensaje.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="{% url 'Propiedad' propiedad.id %}" class="btn btn-outline-secondary me-md-2">
+                                    <i class="fas fa-arrow-left me-2"></i>Volver
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-2"></i>Enviar Consulta
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Bootstrap form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %}

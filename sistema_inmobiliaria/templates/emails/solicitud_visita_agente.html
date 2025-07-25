@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva solicitud de visita</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #28a745; color: white; padding: 20px; text-align: center; }
+        .content { background: #f8f9fa; padding: 20px; }
+        .property-info { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #28a745; }
+        .visit-info { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #ffc107; }
+        .contact-info { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #007bff; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+        .btn { display: inline-block; padding: 10px 20px; margin: 5px; color: white; text-decoration: none; border-radius: 5px; }
+        .btn-success { background: #28a745; }
+        .btn-danger { background: #dc3545; }
+        .btn-primary { background: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Nueva Solicitud de Visita</h1>
+            <p>Un cliente quiere visitar una de tus propiedades</p>
+        </div>
+        
+        <div class="content">
+            <div class="property-info">
+                <h3>Propiedad a Visitar</h3>
+                <p><strong>{{ propiedad.titulo }}</strong></p>
+                <p><strong>Precio:</strong> ${{ propiedad.precio|floatformat:0 }}</p>
+                <p><strong>Características:</strong> {{ propiedad.habitaciones }} hab. | {{ propiedad.bano }} baños | {{ propiedad.estacionamiento }} estac.</p>
+            </div>
+            
+            <div class="visit-info">
+                <h3>Detalles de la Visita Solicitada</h3>
+                <p><strong>Fecha preferida:</strong> {{ solicitud.fecha_preferida|date:"d/m/Y" }}</p>
+                <p><strong>Hora preferida:</strong> {{ solicitud.hora_preferida|time:"H:i" }}</p>
+                <p><strong>Estado:</strong> <span style="color: #ffc107; font-weight: bold;">{{ solicitud.get_estado_display }}</span></p>
+                <p><strong>Fecha de solicitud:</strong> {{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</p>
+            </div>
+            
+            <div class="contact-info">
+                <h3>Datos del Cliente</h3>
+                <p><strong>Nombre:</strong> {{ solicitud.nombre }}</p>
+                <p><strong>Email:</strong> <a href="mailto:{{ solicitud.email }}">{{ solicitud.email }}</a></p>
+                <p><strong>Teléfono:</strong> <a href="tel:{{ solicitud.telefono }}">{{ solicitud.telefono }}</a></p>
+                {% if solicitud.mensaje %}
+                <p><strong>Mensaje adicional:</strong></p>
+                <p style="font-style: italic; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                    "{{ solicitud.mensaje }}"
+                </p>
+                {% endif %}
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <p><strong>¿Qué deseas hacer con esta solicitud?</strong></p>
+                <a href="mailto:{{ solicitud.email }}?subject=Visita confirmada - {{ propiedad.titulo }}&body=Hola {{ solicitud.nombre }},%0D%0A%0D%0ATu solicitud de visita para {{ propiedad.titulo }} ha sido confirmada.%0D%0A%0D%0AFecha: {{ solicitud.fecha_preferida|date:'d/m/Y' }}%0D%0AHora: {{ solicitud.hora_preferida|time:'H:i' }}%0D%0A%0D%0ATe estaré esperando en la propiedad.%0D%0A%0D%0ASaludos,%0D%0A{{ agente.nombre }} {{ agente.apellido }}" class="btn btn-success">
+                    Confirmar Visita
+                </a>
+                <a href="mailto:{{ solicitud.email }}?subject=Solicitud de visita - {{ propiedad.titulo }}&body=Hola {{ solicitud.nombre }},%0D%0A%0D%0AGracias por tu interés en {{ propiedad.titulo }}.%0D%0A%0D%0ALamentablemente no puedo confirmar la visita para la fecha solicitada. Te propongo las siguientes alternativas:%0D%0A%0D%0A- [Propón fechas alternativas]%0D%0A%0D%0APor favor, responde este email con tu disponibilidad.%0D%0A%0D%0ASaludos,%0D%0A{{ agente.nombre }} {{ agente.apellido }}" class="btn btn-danger">
+                    Proponer Otra Fecha
+                </a>
+                <a href="tel:{{ solicitud.telefono }}" class="btn btn-primary">
+                    Llamar al Cliente
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Este email fue enviado automáticamente desde el sistema de la inmobiliaria.</p>
+            <p>Para gestionar esta solicitud, ingresa al panel de administración.</p>
+        </div>
+    </div>
+</body>
+</html>

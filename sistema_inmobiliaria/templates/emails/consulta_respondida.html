@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respuesta a tu consulta</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #007bff;
+            margin: 0;
+            font-size: 28px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .consulta-info {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .respuesta-section {
+            background-color: #e8f4fd;
+            border: 1px solid #007bff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .respuesta-section h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        .property-info {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info-row {
+            margin: 8px 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Hemos respondido tu consulta!</h1>
+            <p>Bienes Raíces Premium</p>
+        </div>
+
+        <div class="content">
+            <p>Estimado/a <strong>{{ consulta.nombre }}</strong>,</p>
+            
+            <p>Nos complace informarte que hemos respondido tu consulta. A continuación encontrarás los detalles:</p>
+
+            <div class="consulta-info">
+                <h3>Tu consulta original:</h3>
+                <div class="info-row">
+                    <span class="label">Fecha:</span> {{ consulta.fecha_consulta|date:"d/m/Y H:i" }}
+                </div>
+                {% if consulta.asunto %}
+                <div class="info-row">
+                    <span class="label">Asunto:</span> {{ consulta.asunto }}
+                </div>
+                {% endif %}
+                <div class="info-row">
+                    <span class="label">Tipo:</span> {{ consulta.get_tipo_display }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Origen:</span> {{ consulta.get_origen_display }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Tu mensaje:</span>
+                </div>
+                <p style="margin-top: 5px; padding: 10px; background-color: white; border-radius: 4px;">
+                    {{ consulta.mensaje }}
+                </p>
+            </div>
+
+            {% if consulta.propiedad %}
+            <div class="property-info">
+                <h3>Propiedad consultada:</h3>
+                <div class="info-row">
+                    <span class="label">Título:</span> {{ consulta.propiedad.titulo }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Precio:</span> ${{ consulta.propiedad.precio|floatformat:0 }}
+                </div>
+                <div class="info-row">
+                    <span class="label">ID:</span> #{{ consulta.propiedad.id }}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="respuesta-section">
+                <h3>Nuestra respuesta:</h3>
+                <p>{{ consulta.respuesta|linebreaks }}</p>
+                
+                {% if consulta.fecha_respuesta %}
+                <p style="font-size: 12px; color: #6c757d; margin-top: 15px;">
+                    <em>Respondido el {{ consulta.fecha_respuesta|date:"d/m/Y" }} a las {{ consulta.fecha_respuesta|time:"H:i" }}</em>
+                </p>
+                {% endif %}
+            </div>
+
+            <p>Si tienes alguna pregunta adicional o necesitas más información, no dudes en contactarnos.</p>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="mailto:{{ settings.EMAIL_HOST_USER }}" class="btn">Responder a este email</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Bienes Raíces Premium</strong></p>
+            <p>Tu socio de confianza en bienes raíces</p>
+            <p>Este es un email automático, pero puedes responder directamente para contactarnos.</p>
+        </div>
+    </div>
+</body>
+</html>

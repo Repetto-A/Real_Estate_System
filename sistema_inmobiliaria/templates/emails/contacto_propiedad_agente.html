@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva consulta sobre propiedad</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #007bff; color: white; padding: 20px; text-align: center; }
+        .content { background: #f8f9fa; padding: 20px; }
+        .property-info { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #007bff; }
+        .contact-info { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #28a745; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+        .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Nueva Consulta de Propiedad</h1>
+            <p>Has recibido una nueva consulta sobre una de tus propiedades</p>
+        </div>
+        
+        <div class="content">
+            <div class="property-info">
+                <h3>Propiedad Consultada</h3>
+                <p><strong>{{ propiedad.titulo }}</strong></p>
+                <p><strong>Precio:</strong> ${{ propiedad.precio|floatformat:0 }}</p>
+                <p><strong>Características:</strong> {{ propiedad.habitaciones }} hab. | {{ propiedad.bano }} baños | {{ propiedad.estacionamiento }} estac.</p>
+                <p><strong>Descripción:</strong> {{ propiedad.descripcion|truncatewords:30 }}</p>
+            </div>
+            
+            <div class="contact-info">
+                <h3>Datos del Interesado</h3>
+                <p><strong>Nombre:</strong> {{ contacto.nombre }}</p>
+                <p><strong>Email:</strong> <a href="mailto:{{ contacto.email }}">{{ contacto.email }}</a></p>
+                {% if contacto.telefono %}
+                <p><strong>Teléfono:</strong> <a href="tel:{{ contacto.telefono }}">{{ contacto.telefono }}</a></p>
+                {% endif %}
+                <p><strong>Fecha de consulta:</strong> {{ contacto.fecha_consulta|date:"d/m/Y H:i" }}</p>
+            </div>
+            
+            <div style="background: white; padding: 15px; margin: 15px 0;">
+                <h3>Mensaje del Cliente</h3>
+                <p style="font-style: italic; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                    "{{ contacto.mensaje }}"
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="mailto:{{ contacto.email }}?subject=Re: Consulta sobre {{ propiedad.titulo }}" class="btn">
+                    Responder al Cliente
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Este email fue enviado automáticamente desde el sistema de la inmobiliaria.</p>
+            <p>Para gestionar esta consulta, ingresa al panel de administración.</p>
+        </div>
+    </div>
+</body>
+</html>
