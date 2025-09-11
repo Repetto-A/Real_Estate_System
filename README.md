@@ -18,6 +18,16 @@ A Django-based web application for managing and showcasing real estate propertie
   - Automatic email confirmation
   - Admin panel for management
 
+- **Newsletter System**
+  - Email subscription management
+  - Double opt-in confirmation
+  - Automatic notifications
+
+- **Email Management**
+  - Automatic email confirmations for all interactions
+  - Two-way communication tracking
+  - Admin notification system
+
 - **Corporate Blog**
   - Real estate market articles
   - Categories and tags
