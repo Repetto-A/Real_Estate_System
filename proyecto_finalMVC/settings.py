@@ -31,7 +31,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Add your own host here
+ALLOWED_HOSTS = ['realestatesystem-production.up.railway.app']
 
 
 # Application definition
