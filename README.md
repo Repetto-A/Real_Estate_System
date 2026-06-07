@@ -118,11 +118,7 @@ A Django-based web application for managing and showcasing real estate propertie
    - Página principal: http://127.0.0.1:8000 o http://localhost:8000
    - Panel de administración: http://127.0.0.1:8000/admin
 
-### Admin Credentials | Credenciales de Administrador
-- Username | Usuario: `admin`
-- Password | Contraseña: `testpassword`
-
-### To create a new superuser | Para crear un nuevo superusuario:
+### Create a superuser | Crear superusuario:
 ```bash
 python manage.py createsuperuser
 ```
